@@ -10,7 +10,7 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 
 
-def calculatePredictionAccuracy(actual:np.array, predicted:np.array):
+def calculatePredictionAccuracy(actual:np.array, predicted:np.array, meanadjust=False):
     
     # start: function parameter assertions
     assert type(actual)==np.ndarray, 'actual is expected to be an numpy array'
@@ -23,6 +23,9 @@ def calculatePredictionAccuracy(actual:np.array, predicted:np.array):
     
     # Let's use 0 as the null hypothesis
     nullHypothesis = np.zeros(shape=predicted.shape)
+    if meanadjust:
+        nullHypothesis += actual.mean(axis=0)
+    
     deviation_nullHypothesis = mean_squared_error(actual, nullHypothesis,multioutput='raw_values')
     
     
