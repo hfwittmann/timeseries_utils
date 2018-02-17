@@ -37,70 +37,40 @@ import matplotlib.pyplot as pyplot
 
 # =============================================================================
 
-
-def fitMultipleUnivariateSeries(MUS, percentageTraining = 0.5):
+def fitMultipleUnivariateSeries(SERIES_train:np.array , SERIES_test:np.array):
     
+    assert type(SERIES_train)==np.ndarray, 'SERIES_train is expected to be an numpy array'
+    assert type(SERIES_test)==np.ndarray, 'SERIES_test is expected to be an numpy array'
+       
+    nOfPoints_train, nOfSeries_train = SERIES_train.shape
+    nOfPoints_test, nOfSeries_test = SERIES_test.shape
     
-    nOfPoints = MUS.shape[0]
-    nOfSeries = MUS.shape[1]
+    assert nOfSeries_train == nOfSeries_test, 'The number of series of SERIES_train and SERIES_test should match'
     
-    trainingLength = int(nOfPoints*percentageTraining)
-
-    FC = np.zeros([nOfPoints - trainingLength, nOfSeries])
-    FITS = list()
+    FC = np.zeros([nOfPoints_test, nOfSeries_test ])
+    FITS =list()
     
-
-    for Series in range(nOfSeries):
-        
-        y = MUS[:,Series]
-        
-        y_ts = stats.as_ts(y)
-        train = stats.window (y_ts, trainingLength)
+    for Series in range (nOfSeries_test):
+ 
+        # fit training data
+        y_train = SERIES_train[:,Series]        
+        y_train_ts = stats.as_ts(y_train)
+        train = y_train_ts # ?? stats.window        
         fit = forecast.auto_arima(train)
-        refit = forecast.Arima(y_ts, model=fit)
-        fc = stats.window(stats.fitted(refit), start = trainingLength+1)
-    
-        FC[:,Series] =  fc
+        
+        # refit testing data
+        y_test = SERIES_test[:,Series]        
+        y_test_ts = stats.as_ts(y_test)
+        
+        refit = forecast.Arima(y_test_ts, model=fit)
+        fc = stats.fitted(refit) # ?? stats.window
+        
+        FC[:,Series] = fc
         FITS.append(fit)
-    
+        
+        
     return FC, FITS
 
 
-
-#from artificial_data import artificial_data
-#
-#nOfPoints = 1000
-#nOfSeries = 15
-#percentageTraining = 0.5
-#trainingLength = nOfPoints*percentageTraining
-#
-#x, MUS = artificial_data(nOfPoints=nOfPoints, nOfSeries=nOfSeries, f_rauschFactor=0.9)
-#
-#FC = fitMultipleUnivariateSeries(MUS, percentageTraining)
-#
-## plot each column
-#pyplot.figure()
-#
-#totalNumberOfPlots = 3
-#
-#plotnumber = 1
-#pyplot.subplot(totalNumberOfPlots, 1, plotnumber)
-#pyplot.plot(x, MUS)
-#pyplot.plot(x[trainingLength:], FC, color='black')
-#pyplot.ylabel('Signal and prediction')
-#
-#
-#plotnumber = 2
-#pyplot.subplot(totalNumberOfPlots, 1, plotnumber)
-#pyplot.plot(x, MUS)
-#pyplot.ylabel('Signal')
-#
-#plotnumber = 3
-#pyplot.subplot(totalNumberOfPlots, 1, plotnumber)
-#pyplot.plot(x, MUS, color='white')
-#pyplot.plot(x[trainingLength:], FC, color='black')
-#pyplot.ylabel('Prediction')
-#
-#pyplot.xlabel('time')
 
 

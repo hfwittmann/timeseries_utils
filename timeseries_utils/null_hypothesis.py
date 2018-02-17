@@ -10,13 +10,16 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 
 
-def calculatePredictionAccuracy(actual, predicted):
+def calculatePredictionAccuracy(actual:np.array, predicted:np.array):
+    
+    # start: function parameter assertions
+    assert type(actual)==np.ndarray, 'actual is expected to be an numpy array'
+    assert type(predicted)==np.ndarray, 'predicted is expected to be an numpy array'
+    # end: function parameter assertions
     
     assert actual.shape == predicted.shape, "Shapes of actual and predtited should match!"
 
     nofPointsOutofSample, nOfSeries = predicted.shape
-        
-    
     
     # Let's use 0 as the null hypothesis
     nullHypothesis = np.zeros(shape=predicted.shape)

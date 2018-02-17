@@ -8,7 +8,7 @@ Created on Mon Jan 29 21:33:16 2018
 
 import numpy as np
 from unittest import TestCase
-from timeseries_utils.differences import diffinv, diffinv_multi
+from timeseries_utils.differences import diffinv, diffinv_multi, diffinv_rolling
 
 
 class TestDiffs(TestCase):
@@ -25,7 +25,7 @@ class TestDiffs(TestCase):
         for n in range(10):
                                 
             D_series = np.diff(self.series1,n=n)        
-            series_reconstructed = diffinv(D_series=D_series, differences=n, getxiFrom = self.series1)
+            series_reconstructed = diffinv(D_series=D_series, differences=n, originalSeries = self.series1)
             # first diffed then cumsummed 
             
             self.assertTrue( np.all(1e-10 > series_reconstructed - self.series1), 
@@ -42,7 +42,7 @@ class TestDiffs(TestCase):
             multi_list = list()
             
             for S in range(nOfSeries):
-                series_reconstructed = diffinv(D_series = D_series[:,S], differences=n, getxiFrom = self.multiSeries[:,S])
+                series_reconstructed = diffinv(D_series = D_series[:,S], differences=n, originalSeries = self.multiSeries[:,S])
                 multi_list.append(series_reconstructed)
                 
             multiseries_reconstructed = np.vstack(multi_list).T
@@ -60,7 +60,7 @@ class TestDiffs(TestCase):
 
                 
             multiseries_reconstructed = \
-                diffinv_multi(multi_DSeries = multi_DSeries, differences=n, getxiFrom = self.multiSeries)
+                diffinv_multi(multi_DSeries = multi_DSeries, differences=n, originalSeries = self.multiSeries)
             
             self.assertTrue( np.all(1e-10 > multiseries_reconstructed - self.multiSeries), 
                             'Should be the same after n-differencing and n-integrating')
@@ -74,7 +74,24 @@ class TestDiffs(TestCase):
 
                 
             multiseries_reconstructed = \
-                diffinv(D_series = multi_DSeries, differences=n, axis=0, getxiFrom = self.multiSeries)
+                diffinv(D_series = multi_DSeries, differences=n, axis=0, originalSeries = self.multiSeries)
+            
+            self.assertTrue( np.all(1e-10 > multiseries_reconstructed - self.multiSeries), 
+                            'Should be the same after n-differencing and n-integrating')
+            
+            
+    def test_multivariate_4(self):
+    
+        for n in range(10):
+                                
+            multi_DSeries = np.diff(self.multiSeries,n=n, axis=0)
+
+                
+            multiseries_reconstructed = \
+                diffinv_rolling(prediction_diff = multi_DSeries,
+                                differences=n,
+                                axis=0,
+                                originalSeries = self.multiSeries)
             
             self.assertTrue( np.all(1e-10 > multiseries_reconstructed - self.multiSeries), 
                             'Should be the same after n-differencing and n-integrating')
