@@ -5,7 +5,7 @@ from .pickle import save, load
 
 from .configuration import Configuration
 from .data import Data
-from .null_hypothesis import calculatePredictionAccuracy
+from .forecast_skill import calculateForecastSkillScore, calcMovingAverage
 
 
 from .arima_define_fit_predict import defineFitPredict as defineFitPredict_ARIMA

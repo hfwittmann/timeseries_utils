@@ -10,7 +10,7 @@ from unittest import TestCase
 import numpy as np
 
 from timeseries_utils import Configuration, Data
-from timeseries_utils import calculatePredictionAccuracy
+from timeseries_utils import calculateForecastSkillScore
 from timeseries_utils import artificial_data
 from timeseries_utils import defineFitPredict_ARIMA, defineFitPredict_DENSE#, defineFitPredict_LSTM
 
@@ -68,10 +68,10 @@ class Test_Predict(TestCase):
                                              VARIABLES_test=self.VARIABLES_test,
                                              SERIES_test=self.SERIES_test)
         
-        # calculate Accuracy : 0% as good as NULL-Hypothesis, 100% is perfect prediction
-        Accuracy = calculatePredictionAccuracy(actual=self.SERIES_test, predicted=Prediction)
+        # calculate ForecastSkillScore : 0% as good as NULL-Hypothesis, 100% is perfect prediction
+        ForecastSkillScore = calculateForecastSkillScore(actual=self.SERIES_test, predicted=Prediction)
         
-        self.assertTrue((Accuracy > 80).all(), 'Accuracy should be larger than 90%')
+        self.assertTrue((ForecastSkillScore > 80).all(), 'ForecastSkillScore should be larger than 90%')
 
 
     def test_dense(self):
@@ -85,10 +85,10 @@ class Test_Predict(TestCase):
                                              VARIABLES_test=self.VARIABLES_test,
                                              SERIES_test=self.SERIES_test)
         
-        # calculate Accuracy : 0% as good as NULL-Hypothesis, 100% is perfect prediction
-        Accuracy = calculatePredictionAccuracy(actual=self.SERIES_test, predicted=Prediction)
+        # calculate ForecastSkillScore : 0% as good as NULL-Hypothesis, 100% is perfect prediction
+        ForecastSkillScore = calculateForecastSkillScore(actual=self.SERIES_test, predicted=Prediction)
         
-        self.assertTrue((Accuracy > 80).all(), 'Accuracy should be larger than 90%')
+        self.assertTrue((ForecastSkillScore > 80).all(), 'ForecastSkillScore should be larger than 90%')
         
 
         #    takes long time to run, therefore, we dont use the test
@@ -103,10 +103,10 @@ class Test_Predict(TestCase):
         #                                             VARIABLES_test=self.VARIABLES_test,
         #                                             SERIES_test=self.SERIES_test)
         #        
-        #        # calculate Accuracy : 0% as good as NULL-Hypothesis, 100% is perfect prediction
-        #        Accuracy = calculatePredictionAccuracy(actual=self.SERIES_test, predicted=Prediction)
+        #        # calculate ForecastSkillScore : 0% as good as NULL-Hypothesis, 100% is perfect prediction
+        #        ForecastSkillScore = calculatePredictionForecastSkillScore(actual=self.SERIES_test, predicted=Prediction)
         #        
-        #        self.assertTrue((Accuracy > 80).all(), 'Accuracy should be larger than 90%')
+        #        self.assertTrue((ForecastSkillScore > 80).all(), 'ForecastSkillScore should be larger than 90%')
 
         
     
