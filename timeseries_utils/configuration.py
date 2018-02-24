@@ -12,6 +12,12 @@ class Configuration:
     def __init__(self):
 
         self.dictionary = sortedcontainers.SortedDict()
+        
+        self.dictionary['epochs'] = 20
+        self.dictionary['verbose'] = 0
+        self.dictionary['differencingOrder'] = 0
+        self.dictionary['steps_prediction'] = 1
+        self.dictionary['modelname'] = 'modelname'
 
     def __repr__(self):
         return "Configuration()"
